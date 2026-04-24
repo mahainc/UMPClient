@@ -20,9 +20,11 @@ extension UMPClient: DependencyKey {
                 let status = ConsentInformation.shared.consentStatus
                 let formStatus = ConsentInformation.shared.formStatus
                 let formAvailable = formStatus == .available
+                #if DEBUG
                 print(
                     "🔍 [UMP] post-update consentStatus=\(status.rawValue) formStatus=\(formStatus.rawValue) canRequestAds=\(ConsentInformation.shared.canRequestAds)"
                 )
+                #endif
 
                 guard formAvailable, status == .required || status == .unknown else {
                     return mapStatus(status)
@@ -32,16 +34,22 @@ extension UMPClient: DependencyKey {
                 try await presentForm(form)
 
                 let finalStatus = ConsentInformation.shared.consentStatus
+                #if DEBUG
                 print(
                     "🔍 [UMP] post-present consentStatus=\(finalStatus.rawValue) canRequestAds=\(ConsentInformation.shared.canRequestAds)"
                 )
+                #endif
 
                 if finalStatus == .obtained {
                     await analytics.trackEvent("user_consent", [:])
+                    #if DEBUG
                     print("✅ [UMP] User completed consent")
+                    #endif
                 } else {
                     await analytics.trackEvent("user_not_consent", [:])
+                    #if DEBUG
                     print("❌ [UMP] User dismissed or did not complete")
+                    #endif
                 }
                 return mapStatus(finalStatus)
             },
@@ -69,37 +77,41 @@ extension UMPClient: DependencyKey {
 ///
 /// In Release with both overrides off, `debugSettings` stays `nil` and UMP uses
 /// real IP geography — the correct production path for real users.
-private func applyDebugSettings(_ config: UMPConfig, to parameters: RequestParameters) {
+private func applyDebugSettings(_ config: UMPClient.Config, to parameters: RequestParameters) {
     if config.forceConsentFormForQA {
         let debugSettings = DebugSettings()
         debugSettings.geography = .EEA
         parameters.debugSettings = debugSettings
+        #if DEBUG
         print(
             "🔍 [UMP] forceConsentFormForQA=true; forcing geography=.EEA for ALL devices. Revert before shipping."
         )
+        #endif
     } else if !config.testDeviceIdentifiers.isEmpty {
         let debugSettings = DebugSettings()
         debugSettings.geography = .EEA
         debugSettings.testDeviceIdentifiers = config.testDeviceIdentifiers
         parameters.debugSettings = debugSettings
+        #if DEBUG
         print(
             "🔍 [UMP] Test-device override active (\(config.testDeviceIdentifiers.count) devices); forcing geography=.EEA."
         )
+        #endif
     } else {
         #if DEBUG
         let debugSettings = DebugSettings()
         debugSettings.geography = .EEA
         parameters.debugSettings = debugSettings
         print(
-            "🔍 [UMP] DEBUG build: forcing geography=.EEA. Simulators are test devices by default; pass UMPConfig(testDeviceIdentifiers: […]) for physical devices."
+            "🔍 [UMP] DEBUG build: forcing geography=.EEA. Simulators are test devices by default; pass UMPClient.Config(testDeviceIdentifiers: […]) for physical devices."
         )
         #endif
     }
 }
 
-/// Maps UMP SDK's `UMPConsentStatus` to our public `ConsentStatus`.
+/// Maps UMP SDK's `UMPConsentStatus` to our public `UMPClient.ConsentStatus`.
 /// Uses the raw ObjC name to avoid the `ConsentStatus` name collision.
-private func mapStatus(_ status: UserMessagingPlatform.ConsentStatus) -> UMPConsentStatus {
+private func mapStatus(_ status: UserMessagingPlatform.ConsentStatus) -> UMPClient.ConsentStatus {
     switch status {
     case .notRequired:  return .notRequired
     case .required:     return .required
@@ -109,6 +121,7 @@ private func mapStatus(_ status: UserMessagingPlatform.ConsentStatus) -> UMPCons
     }
 }
 
+@MainActor
 private func loadConsentForm() async throws -> ConsentForm {
     try await withCheckedThrowingContinuation { continuation in
         ConsentForm.load { form, error in
