@@ -13,7 +13,7 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", branch: "main"),
         .package(url: "https://github.com/googleads/swift-package-manager-google-user-messaging-platform.git", from: "3.0.0"),
-        .package(path: "../AnalyticClient"),
+        .package(url: "https://github.com/mahainc/AnalyticClient.git", branch: "master"),
     ],
     targets: [
         .target(
