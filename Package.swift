@@ -11,7 +11,14 @@ let package = Package(
         .singleTargetLibrary("UMPClientLive"),
     ],
     dependencies: [
-        .package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", branch: "main"),
+        .package(
+            url: "https://github.com/pointfreeco/swift-dependencies.git",
+            from: "1.9.0"
+        ),
+        .package(
+            url: "https://github.com/pointfreeco/swift-case-paths.git",
+            from: "1.5.0"
+        ),
         .package(url: "https://github.com/googleads/swift-package-manager-google-user-messaging-platform.git", from: "3.0.0"),
         .package(url: "https://github.com/mahainc/AnalyticClient.git", branch: "master"),
     ],
@@ -19,13 +26,17 @@ let package = Package(
         .target(
             name: "UMPClient",
             dependencies: [
-                .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+                .product(name: "Dependencies", package: "swift-dependencies"),
+                .product(name: "DependenciesMacros", package: "swift-dependencies"),
+                .product(name: "CasePaths", package: "swift-case-paths"),
             ]
         ),
         .target(
             name: "UMPClientLive",
             dependencies: [
-                .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+                .product(name: "Dependencies", package: "swift-dependencies"),
+                .product(name: "DependenciesMacros", package: "swift-dependencies"),
+                .product(name: "CasePaths", package: "swift-case-paths"),
                 .product(name: "GoogleUserMessagingPlatform", package: "swift-package-manager-google-user-messaging-platform"),
                 "UMPClient",
                 "AnalyticClient",
