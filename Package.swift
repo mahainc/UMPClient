@@ -20,7 +20,7 @@ let package = Package(
             from: "1.5.0"
         ),
         .package(url: "https://github.com/googleads/swift-package-manager-google-user-messaging-platform.git", from: "3.0.0"),
-        .package(url: "https://github.com/mahainc/AnalyticClient.git", branch: "master"),
+        .package(url: "https://github.com/mahainc/AnalyticClient.git", from: "1.1.0"),
     ],
     targets: [
         .target(
