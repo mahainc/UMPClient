@@ -1,6 +1,6 @@
 import Dependencies
 import UMPClient
-import AnalyticClient
+import AnalyticsClient
 @preconcurrency import UserMessagingPlatform
 import UIKit
 
@@ -8,7 +8,7 @@ extension UMPClient: DependencyKey {
     public static var liveValue: Self {
         .init(
             requestConsentIfNeeded: { config in
-                @Dependency(\.analyticClient) var analytics
+                @Dependency(\.analyticsClient) var analytics
 
                 let parameters = RequestParameters()
                 parameters.isTaggedForUnderAgeOfConsent = config.taggedForUnderAgeOfConsent

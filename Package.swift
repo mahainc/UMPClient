@@ -3,8 +3,10 @@ import PackageDescription
 
 let package = Package(
     name: "UMPClient",
+    // Raised with AnalyticsClient 2.0.0, which is iOS 17+. The only consumer,
+    // ConsentClient, already targets iOS 17.
     platforms: [
-        .iOS(.v16)
+        .iOS(.v17)
     ],
     products: [
         .singleTargetLibrary("UMPClient"),
@@ -20,7 +22,7 @@ let package = Package(
             from: "1.5.0"
         ),
         .package(url: "https://github.com/googleads/swift-package-manager-google-user-messaging-platform.git", from: "3.0.0"),
-        .package(url: "https://github.com/mahainc/AnalyticClient.git", from: "1.1.0"),
+        .package(url: "https://github.com/mahainc/AnalyticsClient.git", from: "2.0.0"),
     ],
     targets: [
         .target(
@@ -39,7 +41,7 @@ let package = Package(
                 .product(name: "CasePaths", package: "swift-case-paths"),
                 .product(name: "GoogleUserMessagingPlatform", package: "swift-package-manager-google-user-messaging-platform"),
                 "UMPClient",
-                "AnalyticClient",
+                "AnalyticsClient",
             ]
         ),
         .testTarget(

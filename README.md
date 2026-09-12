@@ -5,7 +5,7 @@ A TCA-style dependency client wrapping Google's User Messaging Platform (UMP) SD
 ## Layout
 
 - **`UMPClient`** — interface: `requestConsentIfNeeded(_:)`, `consentStatus()`, `canRequestAds()`, `reset()`, plus a `Config` value type with the QA-override knobs and a `ConsentStatus` enum.
-- **`UMPClientLive`** — `GoogleUserMessagingPlatform` wrapper that also tags events through `AnalyticClient`.
+- **`UMPClientLive`** — `GoogleUserMessagingPlatform` wrapper that also tags events through `AnalyticsClient`.
 
 ## Installation
 
@@ -91,7 +91,7 @@ let store = TestStore(initialState: AppFeature.State()) {
 - `swift-dependencies` from 1.9.0
 - `swift-case-paths` from 1.5.0
 - `swift-package-manager-google-user-messaging-platform` (GoogleUserMessagingPlatform) from 3.0.0
-- `AnalyticClient` from 1.0.1
+- `AnalyticsClient` from 1.0.1
 
 ## Platform support
 

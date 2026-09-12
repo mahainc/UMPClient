@@ -12,3 +12,4 @@ Packages/
 
 # macOS
 .DS_Store
+.claude/
