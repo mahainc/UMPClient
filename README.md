@@ -1,5 +1,24 @@
 # UMPClient
 
+> **Archived — end of life.** The UMP consent flow lives in
+> [ConsentClient](https://github.com/mahainc/ConsentClient) 2.0.0 and later, which owns
+> App Tracking Transparency and the UMP form together and conforms
+> `FunnelClient.Consent.Providing` directly. The two were always sequenced as one
+> decision (ATT first, then UMP), so splitting them across packages meant every host
+> re-implemented the ordering. Nothing here was dropped: the three-tier geography
+> waterfall, the `formAvailable && (required || unknown)` presentation guard, and the
+> `user_consent` / `user_not_consent` analytics tagging all moved across. No further
+> releases will be made.
+>
+> Migration — replace `@Dependency(\.umpClient)` with `@Dependency(\.consentClient)`:
+>
+> | UMPClient | ConsentClient |
+> |---|---|
+> | `requestConsentIfNeeded(config)` | `requestAdsConsent(config)` — returns the `ConsentStatus` |
+> | `canRequestAds()` | `canRequestAds()` |
+> | `reset()` | `resetAdsConsent()` |
+> | `UMPClient.Config` | `ConsentClient.Config` (a real type, no longer a typealias) |
+
 A TCA-style dependency client wrapping Google's User Messaging Platform (UMP) SDK for GDPR / EEA consent collection. Presents the consent form when required, surfaces the resulting `ConsentStatus`, and exposes a debug-only QA escape hatch for testing the EEA flow from non-EEA test devices.
 
 ## Layout
